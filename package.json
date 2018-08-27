@@ -6,10 +6,16 @@
     "name": "IngenicoNPSLatam",
     "email": "development@sub1.com.ar"
   },
-  "keywords": ["NPS", "Ingenico", "Payments", "React", "NPS.js"],
+  "keywords": [
+    "NPS",
+    "Ingenico",
+    "Payments",
+    "React",
+    "NPS.js"
+  ],
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/Ingenico-NPS-Latam/nps-sdk-react.git"
+    "type": "git",
+    "url": "https://github.com/Ingenico-NPS-Latam/nps-sdk-react.git"
   },
   "main": "./lib/ReactNPS.js",
   "license": "MIT",

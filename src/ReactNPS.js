@@ -72,6 +72,8 @@ class ReactNPS extends Component {
         this.recachePaymentMethodToken = this.recachePaymentMethodToken.bind(this);
         this.retrivePaymentMethodToken = this.retrivePaymentMethodToken.bind(this);
         this.getInstallmentsOptions = this.getInstallmentsOptions.bind(this);
+
+        this.cardValidator = this.cardValidator.bind(this);
     }
 
     setClientSession(data){
@@ -123,9 +125,10 @@ class ReactNPS extends Component {
     createPaymentMethodToken(data){
 
         let validate = this.state.npsValidator.validateCreateToken(data);
+        let npsValidate = this.cardValidator(data);
 
-        if(validate.length){
-            return validate;
+        if(validate.length || npsValidate){
+            return validate || 'There is an error in the data, please verify and try again';
         }else{
             let result = {};
             let error = {};
@@ -170,12 +173,20 @@ class ReactNPS extends Component {
     }
 
     getInstallmentsOptions(data){
-
-        let result = window.NPS.card.getInstallmentsOptions(data.token, data.product, data.payments);
+        let result = {};
+        result = window.NPS.card.getInstallmentsOptions(data.token, data.product, data.payments);
 
         return {
             result: result
         };
+    }
+
+
+    cardValidator(data){
+        return window.NPS.card.validateHolderName(data.holder_name) ||
+                window.NPS.card.validateNumber(data.number) ||
+                window.NPS.card.validateExpirationDate(data.exp_month, data.exp_year) ||
+                window.NPS.card.validateSecurityCode(data.security_code)
     }
 }
 
