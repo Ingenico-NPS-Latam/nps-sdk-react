@@ -6,3 +6,6 @@
 
 - And import it into your project
 	> import ReactNPS from "nps-sdk-react"
+
+## More info:
+[React NPS Documentation](https://developers.nps.com.ar/GuideReference/reference/advanced/react)
