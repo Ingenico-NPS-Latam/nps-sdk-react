@@ -23,7 +23,7 @@
     "build": "webpack"
   },
   "peerDependencies": {
-    "react": "^16.0.0",
+    "react": "^16.8.x",
     "react-dom": "^16.0.0"
   },
   "devDependencies": {
