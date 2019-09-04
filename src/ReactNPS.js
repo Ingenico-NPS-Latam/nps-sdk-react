@@ -9,45 +9,12 @@ class ReactNPS extends Component {
 
     constructor(props, context) {
         super(props, context);
-        let self = this;
-
-
         this.state = {
             ...props,
-            npsValidator: new ReactNPSValidators()
+            npsValidator: new ReactNPSValidators(),
         };
 
-        const script = document.createElement('script');
-        if(props.env === 'sandbox')
-            script.src = sandbox;
-
-        if(props.env === 'implementation')
-            script.src = implementation;
-
-        if(props.env === 'production')
-            script.src = production;
-
-
-        script.async = true;
-        script.defer = true;
-        document.body.appendChild(script);
-        setTimeout(() => {
-            if(props.session && props.session !== ''){
-                self.setClientSession(props.session);
-            }
-            if(props.merchant && props.merchant !== ''){
-                self.setMerchantID(props.merchant)
-            }
-            if(props.fingerprint && props.fingerprint !== ''){
-                self.setUseDeviceFingerPrint(props.fingerprint)
-            }
-            if(props.expDate && props.expDate !== ''){
-                self.setExpDateFormat(props.expDate)
-            }
-            if(props.language && props.language !== ''){
-                self.setLanguage(props.language)
-            }
-        },2000);
+        this.loadAndInitialize();
 
         this.setClientSession = this.setClientSession.bind(this);
         this.getClientSession = this.getClientSession.bind(this);
@@ -74,52 +41,122 @@ class ReactNPS extends Component {
         this.getInstallmentsOptions = this.getInstallmentsOptions.bind(this);
 
         this.cardValidator = this.cardValidator.bind(this);
+        this.loadNpsScript = this.loadNpsScript.bind(this);
+    }
+
+
+
+    loadNpsScript() {
+        return new Promise((resolve,reject) => {
+            if(!window.NPS){
+                window.NPS = {};
+                const script = document.createElement('script');
+                if(this.props.env === 'sandbox')
+                    script.src = sandbox;
+
+                if(this.props.env === 'implementation')
+                    script.src = implementation;
+
+                if(this.props.env === 'production')
+                    script.src = production;
+
+                script.async = false;
+                document.head.appendChild(script);
+            }
+            setTimeout(()=>{
+                resolve('Loaded');
+            },1000);
+
+        });
+    }
+
+    async loadAndInitialize() {
+        let x = await this.loadNpsScript();
+        if(this.props.session && this.props.session !== ''){
+            this.setClientSession(this.props.session);
+         }
+         if(this.props.merchant && this.props.merchant !== ''){
+             this.setMerchantID(this.props.merchant)
+         }
+         if(this.props.fingerprint && this.props.fingerprint !== ''){
+             this.setUseDeviceFingerPrint(this.props.fingerprint)
+         }
+         if(this.props.expDate && this.props.expDate !== ''){
+             this.setExpDateFormat(this.props.expDate)
+         }
+         if(this.props.language && this.props.language !== ''){
+             this.setLanguage(this.props.language)
+         }
     }
 
     setClientSession(data){
-        window.NPS.setClientSession(data)
+        this.loadNpsScript().then(() =>{
+            window.NPS.setClientSession(data)
+        });
     }
 
     getClientSession(){
-        return window.NPS.getClientSession();
+        this.loadNpsScript().then(() => {
+            return window.NPS.getClientSession();
+        });
     }
 
     setMerchantID(data){
-        window.NPS.setMerchantId(data);
+        this.loadNpsScript().then(() => {
+            window.NPS.setMerchantId(data);
+        });
     }
 
     setUseDeviceFingerPrint(data){
-        window.NPS.setUseDeviceFingerPrint(data);
+        this.loadNpsScript().then(() => {
+            window.NPS.setUseDeviceFingerprint(data);
+        });
     }
 
     setExpDateFormat(data){
-        window.NPS.setExpDateFormat(data);
+        this.loadNpsScript().then(() => {
+            window.NPS.setExpDateFormat(data);
+        });
     }
 
     getExpDateFormat(){
-        return window.NPS.getExpDateFormat;
+        this.loadNpsScript().then(() => {
+            return window.NPS.getExpDateFormat;
+        });
     }
 
     setLanguage(lang){
-        window.NPS.setLanguage(lang);
+        this.loadNpsScript().then(() => {
+            window.NPS.setLanguage(lang);
+        });
     }
 
     setTranslationDictionary(lang,dictionary){
-        window.NPS.setTranslationDictionary(lang,dictionary);
+        this.loadNpsScript().then(() => {
+            window.NPS.setTranslationDictionary(lang, dictionary);
+        });
     }
 
     getIINDetails(data){
-        return window.NPS.getIINDetails(data);
+        this.loadNpsScript().then(() => {
+            return window.NPS.getIINDetails(data);
+        });
     }
 
     setAmount(data){
-        window.NPS.setAmount(data);
+        this.loadNpsScript().then(() => {
+            window.NPS.setAmount(data);
+        });
     }
     setCountry(data){
-        window.NPS.setCountry(data);
+        this.loadNpsScript().then(() => {
+            window.NPS.setCountry(data);
+        });
     }
     setCurrency(data){
-        window.NPS.setCurrency(data);
+        this.loadNpsScript().then(() => {
+            window.NPS.setCurrency(data);
+        });
     }
 
     createPaymentMethodToken(data){
@@ -132,8 +169,9 @@ class ReactNPS extends Component {
         }else{
             let result = {};
             let error = {};
-
-            window.NPS.paymentMethodToken.create(data, (data) => result = data, (data) => error = data);
+            this.loadNpsScript().then(() => {
+                window.NPS.paymentMethodToken.create(data, (data) => result = data, (data) => error = data);
+            });
 
             return {
                 result: result,
@@ -150,8 +188,9 @@ class ReactNPS extends Component {
         }else{
             let result = {};
             let error = {};
-
-            window.NPS.paymentMethodToken.recache(data, (data) => result = data, (data) => error = data);
+            this.loadNpsScript().then(() => {
+                window.NPS.paymentMethodToken.recache(data, (data) => result = data, (data) => error = data);
+            });
 
             return {
                 result: result,
@@ -163,8 +202,9 @@ class ReactNPS extends Component {
     retrivePaymentMethodToken(data){
         let result = {};
         let error = {};
-
-        window.NPS.paymentMethodToken.retrieve(data, (data) => result = data, (data) => error = data);
+        this.loadNpsScript().then(() => {
+            window.NPS.paymentMethodToken.retrieve(data, (data) => result = data, (data) => error = data);
+        });
 
         return {
             result: result,
@@ -174,7 +214,9 @@ class ReactNPS extends Component {
 
     getInstallmentsOptions(data){
         let result = {};
-        result = window.NPS.card.getInstallmentsOptions(data.token, data.product, data.payments);
+        this.loadNpsScript().then(() => {
+            result = window.NPS.card.getInstallmentsOptions(data.token, data.product, data.payments);
+        });
 
         return {
             result: result

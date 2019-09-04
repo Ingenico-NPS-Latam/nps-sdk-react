@@ -1,6 +1,6 @@
 {
   "name": "nps-sdk-react",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "React wrapper for NPS.js library",
   "author": {
     "name": "IngenicoNPSLatam",
