@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import 'babel-polyfill';
 import ReactNPSValidators from './Validators';
 
 const sandbox = 'https://sandbox.nps.com.ar/sdk/v1/NPS.js';
@@ -160,67 +161,116 @@ class ReactNPS extends Component {
     }
 
     createPaymentMethodToken(data){
-
-        let validate = this.state.npsValidator.validateCreateToken(data);
-        let npsValidate = this.cardValidator(data);
-
-        if(validate.length || npsValidate){
-            return validate || 'There is an error in the data, please verify and try again';
-        }else{
+        return new Promise((resolve,reject) => {
+            let validate = this.state.npsValidator.validateCreateToken(data);
+            let npsValidate = this.cardValidator(data);
             let result = {};
             let error = {};
-            this.loadNpsScript().then(() => {
-                window.NPS.paymentMethodToken.create(data, (data) => result = data, (data) => error = data);
-            });
 
-            return {
-                result: result,
-                error: error
-            };
-        }
+            if(validate.length || npsValidate){
+                resolve({
+                    result: result,
+                    error: validate || 'There is an error in the data, please verify and try again'
+                });
+            }else{
+                this.loadNpsScript().then(() => {
+                    let apiResult = window.NPS.paymentMethodToken.create(data, (data) => result = data, (data) => error = data);
+                    if(apiResult.object == 'error'){
+                        error = apiResult;
+                        reject({
+                            result: result,
+                            error: error
+                        });
+                    }else{
+                        result = apiResult;
+                        resolve({
+                            result: result,
+                            error: error
+                        });
+                    }
+                });
+            }
+        });
     }
 
     recachePaymentMethodToken(data){
-        let validate = this.state.npsValidator.validateCreateToken(data);
-
-        if(validate.length){
-            return validate;
-        }else{
+        return new Promise((resolve,reject) => {
+            let validate = this.state.npsValidator.validateCreateToken(data);
             let result = {};
             let error = {};
-            this.loadNpsScript().then(() => {
-                window.NPS.paymentMethodToken.recache(data, (data) => result = data, (data) => error = data);
-            });
 
-            return {
-                result: result,
-                error: error
-            };
-        }
+            if(validate.length){
+                resolve({
+                    result: result,
+                    error: validate || 'There is an error in the data, please verify and try again'
+                });
+            }else{
+                this.loadNpsScript().then(() => {
+                    let apiResult = window.NPS.paymentMethodToken.recache(data, (data) => result = data, (data) => error = data);
+                    if(apiResult.object == 'error'){
+                        error = apiResult;
+                        reject({
+                            result: result,
+                            error: error
+                        });
+                    }else{
+                        result = apiResult;
+                        resolve({
+                            result: result,
+                            error: error
+                        });
+                    }
+                });
+            }
+        });
     }
 
     retrivePaymentMethodToken(data){
-        let result = {};
-        let error = {};
-        this.loadNpsScript().then(() => {
-            window.NPS.paymentMethodToken.retrieve(data, (data) => result = data, (data) => error = data);
-        });
+        return new Promise((resolve,reject) => {
+            let result = {};
+            let error = {};
 
-        return {
-            result: result,
-            error: error
-        };
+            this.loadNpsScript().then(() => {
+                let apiResult = window.NPS.paymentMethodToken.retrieve(data, (data) => result = data, (data) => error = data);
+                if(apiResult.object == 'error'){
+                    error = apiResult;
+                    reject({
+                        result: result,
+                        error: error
+                    });
+                }else{
+                    result = apiResult;
+                    resolve({
+                        result: result,
+                        error: error
+                    });
+                }
+            });
+        });
     }
 
     getInstallmentsOptions(data){
-        let result = {};
-        this.loadNpsScript().then(() => {
-            result = window.NPS.card.getInstallmentsOptions(data.token, data.product, data.payments);
-        });
+        return new Promise((resolve,reject) => {
+            let result = {};
+            let error = {};
 
-        return {
-            result: result
-        };
+            this.loadNpsScript().then(() => {
+                let apiResult = window.NPS.card.getInstallmentsOptions(data.token, data.product, data.payments);
+                if(apiResult.object == 'error'){
+                    error = apiResult;
+                    reject({
+                        result: result,
+                        error: error
+                    });
+                }else{
+                    result = apiResult;
+                    resolve({
+                        result: result,
+                        error: error
+                    });
+                }
+            });
+        });
     }
 
 
