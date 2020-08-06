@@ -1,5 +1,7 @@
+if (!window._babelPolyfill && !global._babelPolyfill) {
+    require('babel-polyfill');
+}
 import { Component } from 'react';
-import 'babel-polyfill';
 import ReactNPSValidators from './Validators';
 
 const sandbox = 'https://sandbox.nps.com.ar/sdk/v1/NPS.js';
