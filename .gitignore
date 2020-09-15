@@ -1,2 +1,5 @@
-.idea/
+# IDEs and editors
+/.idea/
+/.vscode/
+
 node_modules/
