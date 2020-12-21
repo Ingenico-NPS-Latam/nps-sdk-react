@@ -1,6 +1,6 @@
 {
   "name": "nps-sdk-react",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "React wrapper for NPS.js library",
   "author": {
     "name": "IngenicoNPSLatam",
@@ -33,9 +33,9 @@
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.24.1",
     "path": "^0.12.7",
-    "react": "^16.13.1",
-    "react-dom": "^16.0.0",
-    "webpack": "^4.43.0",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.6"
   },
   "dependencies": {
